@@ -1,26 +1,24 @@
 import React, { useState } from 'react';
 import { FiAlertCircle } from 'react-icons/fi';
 import Swal from 'sweetalert2';
+import { v4 as uuidv4 } from 'uuid';
 
 
 const AddEventField = ({ setShowForm, onEventCreated }) => {
     const [eventData, setEventData] = useState('');
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(false);
-
-    const generateCustomId = () => {
-        const prefix = 'evt';
-        const randomStr = Math.random().toString(36).substring(2, 8); // 6-char alphanumeric
-        const timestamp = Date.now().toString().slice(-4); // last 4 digits of time
-        return `${prefix}-${randomStr}-${timestamp}`;
-    };
+    const id = uuidv4();
 
     const handleEventAdd = async (e) => {
         e.preventDefault();
         const form = e.target;
         const formData = new FormData(form);
         const eventData = Object.fromEntries(formData.entries());
-        eventData.id = generateCustomId();
+        eventData.archived = false;
+        eventData.id = id;
+        eventData.createdAt = new Date().toISOString();
+
         setLoading(true);
         setError(null);
         try {
@@ -31,7 +29,7 @@ const AddEventField = ({ setShowForm, onEventCreated }) => {
             };
 
             const response = await fetch(`${import.meta.env.VITE_API_URL}/event`, requestOptions);
-            console.log('Response status:', response.status);
+            // console.log('Response status:', response.status);
             onEventCreated();
             // console.log('Response ok:', response.ok);
 

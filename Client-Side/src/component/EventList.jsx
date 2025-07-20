@@ -28,6 +28,29 @@ const EventList = ({ refreshTrigger }) => {
         }
     };
 
+    const deleteEvent = async (id) => {
+        setLoading(true);
+        setError(null);
+        console.log(id)
+
+        try {
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/event/${id}`, {
+                method: 'DELETE',
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to delete event');
+            }
+
+            setEventData(prev => prev.filter(event => event.id !== id));
+        } catch (error) {
+            setError('Failed to delete event. Please try again.');
+            console.error('Error deleting event:', error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
     useEffect(() => {
         fetchEvents();
     }, [refreshTrigger]);
@@ -49,9 +72,9 @@ const EventList = ({ refreshTrigger }) => {
 
             {eventData.length > 0 ? (
 
-                <div className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
                     {eventData.map((event) => (
-                        <EventData key={event.id} event={event}></EventData>
+                        <EventData key={event.id} event={event} onDelete={deleteEvent} loading={loading}></EventData>
                     ))}
                 </div>
             ) : (
