@@ -1,9 +1,12 @@
 import React, { useState } from 'react';
+import { FiAlertCircle } from 'react-icons/fi';
+import Swal from 'sweetalert2';
 
 
-const AddEventField = () => {
+const AddEventField = ({ setShowForm, onEventCreated }) => {
     const [eventData, setEventData] = useState('');
     const [error, setError] = useState(null);
+    const [loading, setLoading] = useState(false);
 
     const generateCustomId = () => {
         const prefix = 'evt';
@@ -18,7 +21,8 @@ const AddEventField = () => {
         const formData = new FormData(form);
         const eventData = Object.fromEntries(formData.entries());
         eventData.id = generateCustomId();
-
+        setLoading(true);
+        setError(null);
         try {
             const requestOptions = {
                 method: 'POST',
@@ -26,8 +30,9 @@ const AddEventField = () => {
                 body: JSON.stringify(eventData)
             };
 
-            const response = await fetch('http://localhost:3000/event', requestOptions);
-            // console.log('Response status:', response.status);
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/event`, requestOptions);
+            console.log('Response status:', response.status);
+            onEventCreated();
             // console.log('Response ok:', response.ok);
 
             if (!response.ok) {
@@ -37,10 +42,18 @@ const AddEventField = () => {
             const data = await response.json();
             // console.log('Received data:', data);
             setEventData(data);
+            Swal.fire({
+                title: "Successfully Create Event",
+                icon: "success",
+            });
 
         } catch (error) {
+            setError('Failed to create event. Please try again.');
             console.error('Error occurred:', error);
-            setError(error);
+
+        } finally {
+
+            setLoading(false)
         }
     }
 
@@ -74,9 +87,33 @@ const AddEventField = () => {
                         <label htmlFor='note' className='block text-sm font-medium text-gray-700 mb-1'>Category (Auto-populated by AI)</label>
                         <textarea type="text" rows="3" placeholder='Add any additional notes...' className='w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent' name='category' />
                     </div> */}
-                    <input type="submit" className="mt-6 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors cursor-pointer" value="Add Event" />
+
+                    <div className='flex flex-col-1 gap-4'>
+                        <input type="submit" className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors cursor-pointer" value={loading ? 'Creating...' : 'Create Event'} />
+                        <div>
+                            <button
+                                type="button"
+                                onClick={() => setShowForm(false)}
+                                className="bg-gray-200 text-gray-800 px-4 py-2 rounded-lg hover:bg-gray-300 transition-colors cursor-pointer"
+                            >
+                                Cancel
+                            </button>
+                        </div>
+
+                    </div>
+
 
                 </form>
+
+                {/* Error Message */}
+                {error && (
+                    <div className="bg-red-50 border border-red-200 rounded-lg p-4 mt-6">
+                        <div className="flex items-center gap-2">
+                            <FiAlertCircle size={20} className="text-red-600" />
+                            <p className="text-red-800">{error}</p>
+                        </div>
+                    </div>
+                )}
             </div>
         </div>
     );
