@@ -145,18 +145,16 @@ The frontend will run on: `http://localhost:5173` (default Vite port)
 
 ## 💻 Tech Stack
 
-* **Frontend**: React, JAVAScript, Tailwind CSS, Vite
-* **Backend**: Node.js, Express, JAVAScript
+* **Frontend**: React, JavaScript, Tailwind CSS, Vite
+* **Backend**: Node.js, Express, JavaScript
 * **Dev Tools**: Git, Nodemon, .env config
 
 ---
 
 ## 📸 Screenshots 
 
-<<<<<<<< HEAD:README.md
 ![Homepage Screenshot](/homepage.png)
 ========
-![Homepage Screenshot](./assets/homepage.png)
->>>>>>>> e9b52296ca043943da1c8c9fbf6999cc16c5e9ae:README.ME
+
 
 
