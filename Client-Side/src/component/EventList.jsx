@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { BiCalendar } from 'react-icons/bi';
 import EventData from './EventData';
+import { FiAlertCircle } from 'react-icons/fi';
+
 
 const EventList = ({ refreshTrigger }) => {
     const [eventData, setEventData] = useState([]);
@@ -12,7 +14,7 @@ const EventList = ({ refreshTrigger }) => {
         setLoading(true);
         setError(null);
         try {
-            const response = await fetch(`${import.meta.env.VITE_API_URL}/event`);
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/events`);
             if (!response.ok) {
                 throw new Error('Failed to fetch events');
             }
@@ -27,6 +29,8 @@ const EventList = ({ refreshTrigger }) => {
             setLoading(false);
         }
     };
+
+
 
     const deleteEvent = async (id) => {
         setLoading(true);
@@ -51,6 +55,31 @@ const EventList = ({ refreshTrigger }) => {
         }
     };
 
+    const archiveEvent = async (id, shouldArchive = true) => {
+
+        setError(null);
+        console.log(id);
+        try {
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/event/${id}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ archived: shouldArchive }),
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to archive event');
+
+            }
+            const updatedEvent = await response.json();
+            setEventData(prev => prev.map(event => event.id === id ? updatedEvent : event));
+        } catch (error) {
+            setError('Failed to archive event. Please try again.');
+            console.error('Error archiving event:', error);
+        }
+    }
+
     useEffect(() => {
         fetchEvents();
     }, [refreshTrigger]);
@@ -62,7 +91,7 @@ const EventList = ({ refreshTrigger }) => {
         <div className='bg-white rounded-lg shadow-sm p-8 text-center mt-5'>
             {/* Error Message */}
             {error && (
-                <div className="bg-red-50 border border-red-200 rounded-lg p-4 mt-6">
+                <div className="bg-red-50 border border-red-200 rounded-lg p-4 mt-6 mb-5">
                     <div className="flex items-center gap-2">
                         <FiAlertCircle size={20} className="text-red-600" />
                         <p className="text-red-800">{error}</p>
@@ -72,9 +101,9 @@ const EventList = ({ refreshTrigger }) => {
 
             {eventData.length > 0 ? (
 
-                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
+                <div className="space-y-5">
                     {eventData.map((event) => (
-                        <EventData key={event.id} event={event} onDelete={deleteEvent} loading={loading}></EventData>
+                        <EventData key={event.id} event={event} onDelete={deleteEvent} onArchive={archiveEvent} loading={loading}></EventData>
                     ))}
                 </div>
             ) : (

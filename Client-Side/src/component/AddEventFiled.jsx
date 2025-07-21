@@ -34,7 +34,11 @@ const AddEventField = ({ setShowForm, onEventCreated }) => {
             // console.log('Response ok:', response.ok);
 
             if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
+                // throw new Error(`HTTP error! status: ${response.status}`);
+                const errorData = await response.json();
+                console.log(errorData)
+                setError(errorData.error); // Show validation error from backend
+                return;
             }
 
             const data = await response.json();
@@ -46,7 +50,7 @@ const AddEventField = ({ setShowForm, onEventCreated }) => {
             });
 
         } catch (error) {
-            setError('Failed to create event. Please try again.');
+            setError('Failed to create event. Please try again.', error);
             console.error('Error occurred:', error);
 
         } finally {

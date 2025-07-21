@@ -1,17 +1,36 @@
 const express = require('express')
 const app = express()
 const cors = require('cors');
-const port = 3000
+require('dotenv').config();
+const port = process.env.PORT || 3000;
 
 app.use(cors());
 app.use(express.json());
 
 
-// const events = [
-//     { title: 'Facilis qui non enim', date: '2025-07-20', time: '16:53', note: 'Animi exercitatione' },
-//     { title: 'React Workshop', date: '2025-07-22', time: '10:00', note: 'Advanced hooks and routing' }
-// ];
 const events = [];
+
+
+function sortEventsByDateTime(eventsArray) {
+    return eventsArray.sort((a, b) => {
+        const dateA = new Date(`${a.date}T${a.time}`);
+        const dateB = new Date(`${b.date}T${b.time}`);
+        return dateA.getTime() - dateB.getTime();
+    });
+}
+
+function validateEventData(data) {
+    if (!data.title || !data.title.trim()) {
+        return 'Title is required';
+    }
+    if (!data.date) {
+        return 'Date is required';
+    }
+    if (!data.time) {
+        return 'Time is required';
+    }
+    return null;
+}
 
 function categorizeEvent(title, notes) {
     const text = `${title}`.toLowerCase();
@@ -41,18 +60,24 @@ app.get('/', (req, res) => {
     res.send('Event server Create')
 })
 
-app.get('/event', (req, res) => {
-    res.json(events);
+app.get('/events', (req, res) => {
+    try {
+        const sortedEvents = sortEventsByDateTime([...events]);
+        res.status(200).json(sortedEvents);
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to fetch events' });
+    }
+
 })
-// app.post('/event', (req, res) => {
-//     const event = req.body;
-//     events.push(event);
-//     res.status(201).json(event);
-// })
 
 app.post('/event', (req, res) => {
     try {
         const { id, title, date, time, note, archived, crateAt } = req.body;
+
+        const validationError = validateEventData(req.body);
+        if (validationError) {
+            return res.status(400).json({ error: validateError });
+        }
 
         const newEvent = {
             id,
@@ -78,7 +103,7 @@ app.post('/event', (req, res) => {
 app.delete('/event/:id', (req, res) => {
     const { id } = req.params;
     try {
-        const eventIndex = events.findIndex(event => event.id === id);
+        const eventIndex = events.find(event => event.id === id);
         if (eventIndex === -1) {
             return res.status(404).json({ error: 'event Not found' })
         }
@@ -90,6 +115,24 @@ app.delete('/event/:id', (req, res) => {
         res.status(500).json({ error: 'Failed to deleted event' })
     }
 });
+
+app.put('/event/:id', (req, res) => {
+    const { id } = req.params;
+    const { archived } = req.body;
+    try {
+        const event = events.find(event => event.id === id);
+        if (!event) {
+            return res.status(404).json({ error: 'event not found' });
+        }
+        event.archived = archived;
+        event.upDateAt = new Date().toISOString();
+        console.log(`Archived event: ${event.title}`);
+        res.status(200).json(event);
+    } catch (error) {
+        console.error('Error updating event:', error);
+        res.status(500).json({ error: 'Failed to update event' });
+    }
+})
 
 app.listen(port, () => {
     console.log(`Example app listening on port ${port}`)

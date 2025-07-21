@@ -1,14 +1,13 @@
 import { Calendar, Clock, FileText } from 'lucide-react';
 import Swal from 'sweetalert2';
 
-const EventData = ({ event, onDelete, loading }) => {
+const EventData = ({ event, onDelete, loading, onArchive }) => {
     const getStatusColor = () => {
         if (event.archived) return 'bg-gray-100 text-gray-500 border-gray-200';
         return 'bg-blue-50 text-blue-700 border-blue-200';
     };
 
     const handleDelete = async () => {
-
         Swal.fire({
             title: "Are you sure?",
             text: "You won't be able to revert this!",
@@ -29,6 +28,10 @@ const EventData = ({ event, onDelete, loading }) => {
         });
     }
 
+    const handleArchive = async () => {
+        await onArchive(event.id, !event.archived);
+    }
+
 
     return (
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition-all duration-200 hover:border-gray-300">
@@ -42,7 +45,7 @@ const EventData = ({ event, onDelete, loading }) => {
                             }`}>
                             {event.title}
                         </h3>
-                        <h4>{event.id}</h4>
+
                         <span className={`px-3 py-1 text-xs font-semibold rounded-full border whitespace-nowrap ${getStatusColor()}`}>
                             {event.archived ? 'Archived' : 'Active'}
                         </span>
@@ -88,14 +91,18 @@ const EventData = ({ event, onDelete, loading }) => {
             </div>
             {/* Action Buttons */}
             <div className='flex gap-3 mt-6'>
-                <button className='px-5 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg font-medium transition-colors duration-200 shadow-sm' onClick={() => handleDelete(event.id)}>
-                    Delete
+                <button className='px-5 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg font-medium transition-colors duration-200 shadow-sm cursor-pointer' onClick={handleDelete} disabled={loading}>
+                    {loading ? 'Deleting....' : 'Delete'}
                 </button>
-                <button className='px-5 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg font-medium transition-colors duration-200 border border-gray-300'>
+                <button className='px-5 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg font-medium transition-colors duration-200 border border-gray-300 cursor-pointer' onClick={handleArchive}>
                     {event.archived ? 'Unarchive' : 'Archive'}
                 </button>
             </div>
+
+            
         </div >
+
+        
     );
 };
 
