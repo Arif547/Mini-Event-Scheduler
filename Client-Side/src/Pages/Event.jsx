@@ -4,10 +4,11 @@ import AddEventField from '../component/AddEventFiled';
 import EventList from '../component/EventList';
 
 
+
 const Event = () => {
     const [showForm, setShowForm] = useState(false);
     const [refreshTrigger, setRefreshTrigger] = useState(0);
-    
+
     return (
         <div>
             <div className='bg-white rounded-lg shadow-sm p-6 mask-b-to-blue-50'>
@@ -34,6 +35,7 @@ const Event = () => {
             )}
 
             <EventList refreshTrigger={refreshTrigger}></EventList>
+            
 
         </div>
 

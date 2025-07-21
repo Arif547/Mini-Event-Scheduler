@@ -39,7 +39,7 @@ const EventData = ({ event, onDelete, loading, onArchive }) => {
                 <div className="flex-1">
                     {/* Title and Status */}
                     <div className="flex items-start gap-3 mb-3">
-                        <h3 className={`text-xl font-bold leading-tight ${event.archived
+                        <h3 className={`text-xl text-left font-bold leading-tight ${event.archived
                             ? 'text-gray-400 line-through'
                             : 'text-gray-900'
                             }`}>
@@ -99,10 +99,10 @@ const EventData = ({ event, onDelete, loading, onArchive }) => {
                 </button>
             </div>
 
-            
+
         </div >
 
-        
+
     );
 };
 
