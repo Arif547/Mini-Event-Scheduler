@@ -1,6 +1,6 @@
 # 🗓️ Mini Event Scheduler with AI Categorization
 
-A full-stack event scheduling application built with **React**, **TypeScript**, **Tailwind CSS**, **Node.js**, and **Express**. This app allows users to create, view, update (archive), and delete events—automatically categorizing them using simple AI-like keyword logic.
+A full-stack event scheduling application built with **React**, **JavaScript**, **Tailwind CSS**, **Node.js**, and **Express**. This app allows users to create, view, update (archive), and delete events—automatically categorizing them using simple AI-like keyword logic.
 
 ---
 
@@ -13,7 +13,7 @@ A full-stack event scheduling application built with **React**, **TypeScript**, 
   * 🏠 Personal
   * 📁 Other
 * Beautiful responsive UI with Tailwind CSS
-* TypeScript used on both frontend and backend
+* JavaScript is used on both the frontend and backend
 * RESTful API endpoints
 * In-memory data storage (no database needed)
 * Environment variable configuration
@@ -28,7 +28,7 @@ When a new event is created, the backend analyzes the **title** and **note** to 
 | -------- | ---------------------------------------- |
 | Work     | `meeting`, `project`, `client`           |
 | Personal | `birthday`, `family`, `anniversary`      |
-| Other    | Anything not matched with above keywords |
+| Other    | Anything not matched with the above keywords |
 
 *Keyword matching is case-insensitive.*
 
@@ -38,8 +38,8 @@ When a new event is created, the backend analyzes the **title** and **note** to 
 
 ```
 Mini-Event-Scheduler/
-├── client/        # Frontend (React + TypeScript + Tailwind CSS)
-├── server/        # Backend (Node.js + Express + TypeScript)
+├── client-side/        # Frontend (React + JavaScript + Tailwind CSS)
+├── server-side/        # Backend (Node.js + Express + JavaScript)
 ├── README.md
 ```
 
@@ -57,7 +57,7 @@ Mini-Event-Scheduler/
 ### 1️⃣ Clone the Repository
 
 ```bash
-git clone https://github.com/arif547/mini-event-scheduler.git
+git clone https://github.com/Arif547/Mini-Event-Scheduler.git
 cd mini-event-scheduler
 ```
 
@@ -153,12 +153,6 @@ The frontend will run on: `http://localhost:5173` (default Vite port)
 
 ## 📸 Screenshots 
 
-```markdown
-![Homepage Screenshot](./assets/homepage.png)
-```
+![Homepage Screenshot](/homepage.png)
 
 
-
----
-
-Let me know if you'd like help creating the actual screenshots or want a sample image to use for now!
